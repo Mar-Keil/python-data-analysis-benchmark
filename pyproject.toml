@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools==68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "python-data-analysis-benchmark"
+version = "0.1.0"
+description = "Python benchmark suite for Polars and Pandas comparisons."
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+  "pandas==3.0.2",
+  "polars==1.39.3",
+  "psutil==7.2.2",
+  "pyarrow==23.0.1",
+]
+
+[project.scripts]
+pandas-benchmarks = "phy_bench.benchmark.run_pandas_benchmarks:main"
+polars-benchmarks = "phy_bench.benchmark.run_polars_benchmarks:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["phy_bench*"]
