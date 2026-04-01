@@ -1,9 +1,6 @@
-from __future__ import annotations
-
 from pathlib import Path
 
 import pandas as pd
-from pandas import DataFrame, Series
 
 
 def read_parquet(path: str | Path) -> pd.DataFrame:
@@ -26,12 +23,10 @@ def pivot_dataset(dataset: pd.DataFrame) -> pd.DataFrame:
     )
 
 
-def group_count_dataset(dataset: pd.DataFrame) -> DataFrame:
-    return (
-        dataset.groupby(["aircraft_model", "airline_code"], as_index=False, sort=False)
-        .size()
-        .rename(columns={"size": "count_aircraft"})
-    )
+def group_count_dataset(dataset: pd.DataFrame) -> pd.DataFrame:
+    return dataset.groupby(
+        ["aircraft_model", "airline_code"], as_index=False, sort=False
+    ).agg(count_aircraft=("flight_number", "size"))
 
 
 def join_dataset(dataset: pd.DataFrame, other: pd.DataFrame) -> pd.DataFrame:
