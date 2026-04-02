@@ -211,6 +211,8 @@ results/
 artifacts/
 reports/
 outputs/
+out/
+**/out/
 
 # LaTeX
 *.aux
