@@ -1,7 +1,8 @@
-import polars as pl
-
+from pathlib import Path
 from random import Random
 from datetime import datetime, timedelta
+
+import polars as pl
 from geopy.distance import geodesic
 
 from phy_bench.data_gen.config import OUT_DIR
@@ -9,8 +10,12 @@ from phy_bench.data_gen.config import AIRCRAFT_MODELS
 from phy_bench.data_gen.config import AIRLINE_NAMES
 from phy_bench.data_gen.config import AIRPORT_CODES
 from phy_bench.data_gen.config import AIRPORT_COORDINATES
+from phy_bench.data_gen.config import AVERAGE_FLIGHT_SPEED_KMH
 
-def flights_gen(dataset_rows: int, rnd: Random) -> None:
+
+def create_flights_dataset(dataset_rows: int, rnd: Random) -> Path:
+    target_path = OUT_DIR / f"{dataset_rows // 1000}kFlights.parquet"
+    target_path.parent.mkdir(parents=True, exist_ok=True)
 
     flight_numbers = [f"FL{number}" for number in range(10_000_000, 10_000_000 + dataset_rows)]
     rnd.shuffle(flight_numbers)
@@ -41,7 +46,7 @@ def flights_gen(dataset_rows: int, rnd: Random) -> None:
     arrival_airport = [rnd.choice(AIRPORT_CODES) for _ in range(dataset_rows)]
 
     flight_distance = [
-        geodesic(AIRPORT_COORDINATES[departure_code], AIRPORT_COORDINATES[arrival_code]).kilometers
+        int(round(geodesic(AIRPORT_COORDINATES[departure_code], AIRPORT_COORDINATES[arrival_code]).kilometers))
         for departure_code, arrival_code in zip(departure_airport, arrival_airport)
     ]
 
@@ -56,11 +61,23 @@ def flights_gen(dataset_rows: int, rnd: Random) -> None:
     ]
 
     arrival_time = [
-        departure + timedelta(minutes=rnd.randint(60, 12 * 60))
-        for departure in departure_time
+        departure_value + timedelta(hours=distance_km / AVERAGE_FLIGHT_SPEED_KMH)
+        for departure_value, distance_km in zip(departure_time, flight_distance)
     ]
 
     flights_df = pl.DataFrame(
+        {
+            "flight_number": flight_numbers,
+            "msn": msn,
+            "aircraft_model": aircraft_model,
+            "airline_code": airline_code,
+            "error_free": error_free,
+            "departure_airport": departure_airport,
+            "arrival_airport": arrival_airport,
+            "flight_distance": flight_distance,
+            "departure_time": departure_time,
+            "arrival_time": arrival_time,
+        },
         schema={
             "flight_number": pl.Utf8,
             "msn": pl.Utf8,
@@ -69,8 +86,12 @@ def flights_gen(dataset_rows: int, rnd: Random) -> None:
             "error_free": pl.Boolean,
             "departure_airport": pl.Utf8,
             "arrival_airport": pl.Utf8,
-            "departure_time": pl.Utf8,
-            "arrival_time": pl.Utf8,
             "flight_distance": pl.Int32,
+            "departure_time": pl.Datetime,
+            "arrival_time": pl.Datetime,
         }
     )
+
+    flights_df.write_parquet(target_path, compression="zstd")
+
+    return target_path

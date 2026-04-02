@@ -9,6 +9,7 @@ description = "Python benchmark suite for Polars and Pandas comparisons."
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+  "geopy==2.4.1",
   "pandas==3.0.2",
   "polars==1.39.3",
   "psutil==7.2.2",
@@ -16,6 +17,7 @@ dependencies = [
 ]
 
 [project.scripts]
+generate-datasets = "phy_bench.data_gen.run_generate:main"
 pandas-benchmarks = "phy_bench.benchmark.run_pandas_benchmarks:main"
 polars-benchmarks = "phy_bench.benchmark.run_polars_benchmarks:main"
 
