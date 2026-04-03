@@ -3,11 +3,13 @@ from random import Random
 
 import polars as pl
 
-from phy_bench.data_gen.config import OUT_DIR, AIRLINE_NAMES, AIRPORT_CODES
+from phy_bench.data_gen.config import OUT_DIR, AIRLINE_NAMES, AIRPORT_CODES, SEED
 
-def create_airlines_dataset(rnd: Random) -> Path:
+def create_airlines_dataset() -> Path:
     target_path = OUT_DIR / "airlines.parquet"
     target_path.parent.mkdir(parents=True, exist_ok=True)
+
+    rnd = Random(SEED)
 
     airline_names = list(AIRLINE_NAMES)
 

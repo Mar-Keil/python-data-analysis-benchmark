@@ -1,24 +1,21 @@
-from pathlib import Path
+from concurrent.futures import ProcessPoolExecutor
 
-from random import Random
-
-from phy_bench.data_gen.config import SEED, BENCHMARK_DATASET_ROWS
+from phy_bench.data_gen.config import BENCHMARK_DATASET_ROWS
 
 from phy_bench.data_gen.airline_gen import create_airlines_dataset
 from phy_bench.data_gen.flights_gen import create_flights_dataset
 
 
-def print_output_path(path: Path) -> None:
-    print(f"Wrote dataset to {path}")
-
-
 def main() -> None:
-    rnd = Random(SEED)
+    print(f"Wrote airlines to {create_airlines_dataset()}")
 
-    print_output_path(create_airlines_dataset(rnd))
-
-    for size in BENCHMARK_DATASET_ROWS:
-        print_output_path(create_flights_dataset(size, rnd))
+    with ProcessPoolExecutor() as executor:
+        for size, output_path in zip(
+                BENCHMARK_DATASET_ROWS,
+                executor.map(create_flights_dataset, BENCHMARK_DATASET_ROWS),
+                strict=True,
+        ):
+            print(f"Wrote {size} flights to {output_path}")
 
 if __name__ == "__main__":
     main()
