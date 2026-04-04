@@ -6,8 +6,21 @@ from pathlib import Path
 class PrintCSV:
     def __init__(self, output_dir: Path) -> None:
         self.output_dir = output_dir
+        self.engine_name = self._detect_engine_name()
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.csv_path = self._create_csv()
+
+    def _detect_engine_name(self) -> str:
+        directory_name = self.output_dir.name.lower()
+
+        if "duckdb" in directory_name:
+            return "DuckDB"
+        if "polars" in directory_name:
+            return "polars"
+        if "pandas" in directory_name:
+            return "pandas"
+
+        return self.output_dir.name
 
     def _create_csv(self) -> Path:
         file_number = 1
@@ -17,7 +30,9 @@ class PrintCSV:
             if not candidate.exists():
                 with candidate.open("w", newline="", encoding="utf-8") as csv_file:
                     writer = csv.writer(csv_file)
-                    writer.writerow(["benchmark_size", "method", "category", "score", "unit"])
+                    writer.writerow(
+                        ["engine", "benchmark_size", "method", "category", "score", "unit"]
+                    )
                 return candidate
             file_number += 1
 
@@ -31,6 +46,11 @@ class PrintCSV:
     ) -> None:
         with self.csv_path.open("a", newline="", encoding="utf-8") as csv_file:
             writer = csv.writer(csv_file)
-            writer.writerow([benchmark_size, method, category, score, unit])
+            writer.writerow(
+                [self.engine_name, benchmark_size, method, category, score, unit]
+            )
 
-        print(f"[CSV] {benchmark_size} | {method} | {category} = {score} {unit}")
+        print(
+            f"[CSV][{self.engine_name}] "
+            f"{benchmark_size} | {method} | {category} = {score} {unit}"
+        )
