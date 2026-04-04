@@ -1,13 +1,26 @@
 [build-system]
-requires = ["setuptools==68", "wheel"]
+requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "python-data-analysis-benchmark"
 version = "0.1.0"
 description = "Python benchmark suite for Polars, Pandas, and DuckDB comparisons."
-readme = "README.md"
-requires-python = ">=3.14"
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">=3.10"
+keywords = ["benchmark", "data-analysis", "duckdb", "pandas", "polars"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering",
+  "Topic :: Software Development :: Testing",
+]
 dependencies = [
   "duckdb==1.4.1",
   "pandas==3.0.2",
