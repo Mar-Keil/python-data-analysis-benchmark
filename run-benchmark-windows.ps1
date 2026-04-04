@@ -75,9 +75,9 @@ public static class SleepGuard {
 }
 "@
 
-$ES_CONTINUOUS = 0x80000000
-$ES_SYSTEM_REQUIRED = 0x00000001
-$ES_AWAYMODE_REQUIRED = 0x00000040
+$ES_CONTINUOUS = [uint32]2147483648
+$ES_SYSTEM_REQUIRED = [uint32]1
+$ES_AWAYMODE_REQUIRED = [uint32]64
 
 $systemPython = Get-SystemPython
 if (-not $systemPython) {
