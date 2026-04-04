@@ -17,10 +17,8 @@ dependencies = [
 ]
 
 [project.scripts]
-generate-datasets = "phy_bench.data_gen.run_generate:main"
-pandas-benchmarks = "phy_bench.benchmark.run_pandas_benchmarks:main"
-polars-benchmarks = "phy_bench.benchmark.run_polars_benchmarks:main"
-duckdb-benchmarks = "phy_bench.benchmark.run_duckdb_benchmarks:main"
+generate-datasets = "phy_bench.data_gen.run_dataset_gen:main"
+benchmarks = "phy_bench.benchmark.run_benchmarks:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
