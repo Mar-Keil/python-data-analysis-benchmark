@@ -46,6 +46,23 @@ ensure_datasets() {
   echo "Datasets already exist. Skipping generation."
 }
 
+ensure_venv() {
+  if [[ -x "$VENV_DIR/bin/python" ]]; then
+    local venv_version_ok
+    venv_version_ok="$("$VENV_DIR/bin/python" -c 'import sys; print("ok" if sys.version_info >= (3, 14) else "no")')"
+    if [[ "$venv_version_ok" == "ok" ]]; then
+      echo "Virtual environment already exists."
+      return 0
+    fi
+
+    echo "Existing virtual environment uses an unsupported Python version. Recreating it..."
+    rm -rf "$VENV_DIR"
+  fi
+
+  echo "Creating virtual environment in $VENV_DIR ..."
+  "$1" -m venv "$VENV_DIR"
+}
+
 main() {
   local system_python
 
@@ -57,12 +74,7 @@ main() {
 
   echo "Using Python interpreter: $system_python"
 
-  if [[ ! -d "$VENV_DIR" ]]; then
-    echo "Creating virtual environment in $VENV_DIR ..."
-    "$system_python" -m venv "$VENV_DIR"
-  else
-    echo "Virtual environment already exists."
-  fi
+  ensure_venv "$system_python"
 
   echo "Installing project dependencies..."
   "$VENV_DIR/bin/python" -m pip install --upgrade pip

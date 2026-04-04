@@ -21,3 +21,6 @@ Both scripts:
 - install the project and dependencies
 - generate benchmark datasets if they are missing
 - start the existing interactive benchmark selection
+
+Supported Python versions:
+- Python 3.14 or newer

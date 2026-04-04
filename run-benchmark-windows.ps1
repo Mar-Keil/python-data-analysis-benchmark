@@ -65,6 +65,27 @@ function Ensure-Datasets {
     Write-Host "Datasets already exist. Skipping generation."
 }
 
+function Ensure-Venv {
+    param(
+        [Parameter(Mandatory = $true)]
+        $PythonSpec
+    )
+
+    if (Test-Path $venvPython) {
+        $venvVersionOutput = & $venvPython -c "import sys; print('ok' if sys.version_info >= (3, 14) else 'no')"
+        if ($LASTEXITCODE -eq 0 -and $venvVersionOutput -eq "ok") {
+            Write-Host "Virtual environment already exists."
+            return
+        }
+
+        Write-Host "Existing virtual environment uses an unsupported Python version. Recreating it..."
+        Remove-Item -LiteralPath $venvPath -Recurse -Force
+    }
+
+    Write-Host "Creating virtual environment in $venvPath ..."
+    Invoke-Python -PythonSpec $PythonSpec -Arguments @("-m", "venv", $venvPath)
+}
+
 Add-Type @"
 using System;
 using System.Runtime.InteropServices;
@@ -89,13 +110,7 @@ Write-Host "Using Python interpreter: $($systemPython.Label)"
 try {
     [void][SleepGuard]::SetThreadExecutionState($ES_CONTINUOUS -bor $ES_SYSTEM_REQUIRED -bor $ES_AWAYMODE_REQUIRED)
 
-    if (-not (Test-Path $venvPython)) {
-        Write-Host "Creating virtual environment in $venvPath ..."
-        Invoke-Python -PythonSpec $systemPython -Arguments @("-m", "venv", $venvPath)
-    }
-    else {
-        Write-Host "Virtual environment already exists."
-    }
+    Ensure-Venv -PythonSpec $systemPython
 
     Write-Host "Installing project dependencies..."
     & $venvPython -m pip install --upgrade pip
