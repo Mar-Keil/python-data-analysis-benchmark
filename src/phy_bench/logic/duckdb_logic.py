@@ -11,6 +11,10 @@ def write_parquet(dataset: duckdb.DuckDBPyRelation, path: str | Path) -> None:
     dataset.write_parquet(str(path), compression="zstd")
 
 
+def materialize_dataset(dataset: duckdb.DuckDBPyRelation) -> duckdb.DuckDBPyRelation:
+    return duckdb.from_arrow(dataset.fetch_arrow_table())
+
+
 def filter_dataset(dataset: duckdb.DuckDBPyRelation) -> duckdb.DuckDBPyRelation:
     return dataset.filter("aircraft_model = 'A319neo'")
 
@@ -31,7 +35,27 @@ def join_dataset(
     dataset: duckdb.DuckDBPyRelation,
     other: duckdb.DuckDBPyRelation,
 ) -> duckdb.DuckDBPyRelation:
-    return dataset.join(other, condition="airline_code = airline_code", how="inner")
+    return dataset.set_alias("flights").join(
+        other.set_alias("airlines"),
+        condition="flights.airline_code = airlines.airline_code",
+        how="inner",
+    ).project(
+        """
+        flights.flight_number,
+        flights.msn_number,
+        flights.aircraft_model,
+        flights.airline_code,
+        flights.error_free,
+        flights.departure_airport,
+        flights.arrival_airport,
+        flights.flight_distance,
+        flights.departure_time,
+        flights.arrival_time,
+        airlines.airline_name,
+        airlines.founding_year,
+        airlines.airline_hub
+        """
+    )
 
 
 def sort_dataset(dataset: duckdb.DuckDBPyRelation) -> duckdb.DuckDBPyRelation:
