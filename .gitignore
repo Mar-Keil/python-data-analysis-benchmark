@@ -213,6 +213,7 @@ reports/
 outputs/
 out/
 **/out/
+run-latex.ps1
 
 # LaTeX
 *.aux
