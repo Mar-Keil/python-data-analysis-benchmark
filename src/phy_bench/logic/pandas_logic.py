@@ -3,11 +3,11 @@ from pathlib import Path
 import pandas as pd
 
 
-def read_parquet(path: str | Path) -> pd.DataFrame:
+def read_parquet(path: Path) -> pd.DataFrame:
     return pd.read_parquet(path)
 
 
-def write_parquet(dataset: pd.DataFrame, path: str | Path) -> None:
+def write_parquet(dataset: pd.DataFrame, path: Path) -> None:
     dataset.to_parquet(path, compression="zstd", index=False)
 
 

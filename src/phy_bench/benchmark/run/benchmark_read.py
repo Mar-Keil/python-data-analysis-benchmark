@@ -12,7 +12,7 @@ from phy_bench.benchmark.default.time_cpu_measurement import TimeCPUMeasurement
 
 def benchmark_read(
     print_csv: PrintCSV,
-    read_function: Callable[[str | Path], Any],
+    read_function: Callable[[Path], Any],
 ) -> None:
     time_measurement = TimeCPUMeasurement(print_csv)
 

@@ -31,8 +31,8 @@ def clear_result_directory(path: Path) -> None:
 def benchmark_operation(
     print_csv: PrintCSV,
     output_dir: Path,
-    read_function: Callable[[str | Path], Any],
-    write_function: Callable[[Any, str | Path], None],
+    read_function: Callable[[Path], Any],
+    write_function: Callable[[Any, Path], None],
     operation_function: Callable[..., Any],
     result_directory: str,
     method_name: str,

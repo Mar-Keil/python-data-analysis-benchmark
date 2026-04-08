@@ -4,8 +4,8 @@ from typing import Any
 from typing import Callable
 
 
-ReadFunction = Callable[[str | Path], Any]
-WriteFunction = Callable[[Any, str | Path], None]
+ReadFunction = Callable[[Path], Any]
+WriteFunction = Callable[[Any, Path], None]
 UnaryOperation = Callable[[Any], Any]
 BinaryOperation = Callable[[Any, Any], Any]
 

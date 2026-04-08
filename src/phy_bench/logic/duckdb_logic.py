@@ -3,11 +3,11 @@ from pathlib import Path
 import duckdb
 
 
-def read_parquet(path: str | Path) -> duckdb.DuckDBPyRelation:
+def read_parquet(path: Path) -> duckdb.DuckDBPyRelation:
     return duckdb.read_parquet(str(path))
 
 
-def write_parquet(dataset: duckdb.DuckDBPyRelation, path: str | Path) -> None:
+def write_parquet(dataset: duckdb.DuckDBPyRelation, path: Path) -> None:
     dataset.write_parquet(str(path), compression="zstd")
 
 
@@ -15,7 +15,7 @@ def materialize_dataset(dataset: duckdb.DuckDBPyRelation) -> duckdb.DuckDBPyRela
     return duckdb.from_arrow(dataset.fetch_arrow_table())
 
 
-def read_parquet_materialized(path: str | Path) -> duckdb.DuckDBPyRelation:
+def read_parquet_materialized(path: Path) -> duckdb.DuckDBPyRelation:
     return materialize_dataset(read_parquet(path))
 
 
