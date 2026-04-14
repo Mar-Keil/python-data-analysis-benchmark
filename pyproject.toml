@@ -19,11 +19,11 @@ classifiers = [
   "Topic :: Software Development :: Testing",
 ]
 dependencies = [
-  "duckdb==1.5.1",
+  "duckdb==1.5.2",
   "pandas==3.0.2",
   "polars==1.39.3",
   "psutil==7.2.2",
-  "pyarrow==23.0.1",
+  "pyarrow==23.0.1"
 ]
 
 [project.scripts]
