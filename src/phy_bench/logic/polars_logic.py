@@ -3,11 +3,11 @@ from pathlib import Path
 import polars as pl
 
 
-def read_parquet(path: str | Path) -> pl.DataFrame:
+def read_parquet(path: Path) -> pl.DataFrame:
     return pl.read_parquet(path)
 
 
-def write_parquet(dataset: pl.DataFrame, path: str | Path) -> None:
+def write_parquet(dataset: pl.DataFrame, path: Path) -> None:
     dataset.write_parquet(path)
 
 
