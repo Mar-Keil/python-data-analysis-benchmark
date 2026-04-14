@@ -233,5 +233,7 @@ out/
 *.run.xml
 *.synctex.gz
 *.toc
+.DS_Store
+run-latex.sh
 AGENTS.md
 latex/
